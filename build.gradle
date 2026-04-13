@@ -7,6 +7,19 @@ plugins {
 group = "com.github.aliaohaolong"
 version = "1.0.0"
 
+gradlePlugin {
+    plugins {
+        register("modrinthPlugin") {
+            id = 'com.github.aliaohaolong.modrinth-plugin'  // 插件的唯一标识符
+            implementationClass = 'com.github.aliaohaolong.mcmoddispatcher.ModrinthPlugin'   // 插件入口类的全限定名
+            displayName = 'Modrinth Plugin'
+            description = 'Gradle plugin for Modrinth publishing'
+        }
+    }
+}
+
+// com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher#userAgent 中使用了 getImplementationVersion 来获取版本号
+// 因此需要在 jar 包的 manifest 中添加 Implementation-Version 属性
 tasks.named('jar') {
     manifest {
         attributes(
@@ -33,4 +46,22 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
+}
+
+publishing {
+    publications {
+        // "maven" 是这个发布的名称，可以自定义
+        create('maven', MavenPublication) {
+            // 指定发布的是 Java 组件
+            from components.java
+            // 可以自定义 artifactId，如果不设置，默认使用模块名（一般是项目目录名）
+            artifactId = 'mc-mod-dispatcher'
+
+            pom {
+                name = 'Mc Mod Dispatcher'
+                description = 'A build-decoupled Gradle plugin for publishing Minecraft mods: centralized config, cross-branch dispatch, push without rebuild.'
+                url = 'https://github.com/ALiaoHaolong/mc-mod-dispatcher'
+            }
+        }
+    }
 }
