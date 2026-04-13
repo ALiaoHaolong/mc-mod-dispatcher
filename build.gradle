@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group = "com.github.aliaohaolong"
+version = "1.0.0"
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version
+        )
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'com.github.masecla22:Modrinth4J:master-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
