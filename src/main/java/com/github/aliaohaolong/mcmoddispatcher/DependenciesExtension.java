@@ -16,7 +16,6 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
 import masecla.modrinth4j.model.version.ProjectVersion.ProjectDependencyType;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -25,8 +24,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@SuppressWarnings("ClassCanBeRecord")
 public class DependenciesExtension {
 
     private final NamedDomainObjectContainer<Dependency> dependencies;
@@ -34,6 +31,10 @@ public class DependenciesExtension {
     @Inject
     public DependenciesExtension(final Project project) {
         this.dependencies = project.getObjects().domainObjectContainer(Dependency.class);
+    }
+
+    public NamedDomainObjectContainer<Dependency> getDependencies() {
+        return dependencies;
     }
 
     public List<Dependency> getDependenciesAsList() {

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aliaohaolong"
-version = "1.0.7"
+version = "1.0.8"
 
 repositories {
     mavenCentral()
@@ -17,15 +17,12 @@ dependencies {
     compileOnly gradleApi()
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.github.masecla22:Modrinth4J:master-SNAPSHOT'
-    compileOnly 'org.projectlombok:lombok:1.18.44'
-    annotationProcessor 'org.projectlombok:lombok:1.18.44'
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
     withSourcesJar()
-    withJavadocJar()
 }
 
 // com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher#userAgent 中使用了 getImplementationVersion 来获取版本号
@@ -51,11 +48,16 @@ gradlePlugin {
 }
 
 publishing {
-    publications {
-        // "maven" 是这个发布的名称，可以自定义
-        create('maven', MavenPublication) {
-            // 指定发布的是 Java 组件
-            from components.java
-        }
+    // 发布到本地 Maven 仓库，方便测试和调试
+    repositories {
+        mavenLocal()
     }
+
+    // publications {
+    //     // "maven" 是这个发布的名称，可以自定义
+    //     create('maven', MavenPublication) {
+    //         // 指定发布的是 Java 组件
+    //         from components.java
+    //     }
+    // }
 }

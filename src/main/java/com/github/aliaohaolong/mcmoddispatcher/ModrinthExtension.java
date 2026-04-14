@@ -16,11 +16,9 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 
-@Getter
 public class ModrinthExtension {
 
     private final Property<String> token;
@@ -33,6 +31,22 @@ public class ModrinthExtension {
         projectId = project.getObjects().property(String.class);
         description = project.getObjects().property(String.class);
         debugMode = project.getObjects().property(Boolean.class);
+    }
+
+    public Property<String> getToken() {
+        return token;
+    }
+
+    public Property<String> getProjectId() {
+        return projectId;
+    }
+
+    public Property<String> getDescription() {
+        return description;
+    }
+
+    public Property<Boolean> getDebugMode() {
+        return debugMode;
     }
 
 }

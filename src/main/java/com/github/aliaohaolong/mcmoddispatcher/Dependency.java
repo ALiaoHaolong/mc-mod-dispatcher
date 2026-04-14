@@ -16,7 +16,6 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
 import masecla.modrinth4j.main.ModrinthAPI;
 import masecla.modrinth4j.model.version.ProjectVersion;
 import masecla.modrinth4j.model.version.ProjectVersion.ProjectDependency;
@@ -25,8 +24,6 @@ import org.gradle.api.Named;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-@Getter
-@SuppressWarnings("ClassCanBeRecord")
 public class Dependency implements Named {
 
     private final ProjectDependencyType dependencyType;
@@ -41,6 +38,18 @@ public class Dependency implements Named {
         this.dependencyType = dependencyType;
         this.projectIdOrSlug = projectIdOrSlug;
         this.versionIdOrSlug = versionIdOrSlug;
+    }
+
+    public ProjectDependencyType getDependencyType() {
+        return dependencyType;
+    }
+
+    public String getProjectIdOrSlug() {
+        return projectIdOrSlug;
+    }
+
+    public String getVersionIdOrSlug() {
+        return versionIdOrSlug;
     }
 
     @Override

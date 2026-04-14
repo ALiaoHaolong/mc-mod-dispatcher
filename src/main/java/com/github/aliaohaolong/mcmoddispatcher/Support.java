@@ -16,18 +16,22 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
+import java.util.List;
 
-@Getter
-@SuppressWarnings("ClassCanBeRecord")
-public class SupportExtension {
+public class Support {
 
-    private final NamedDomainObjectContainer<Versions> versions;
+    private final List<String> support;
 
-    public SupportExtension(final Project project) {
-        this.versions = project.getObjects().domainObjectContainer(Versions.class, Versions::new);
+    public Support(List<String> support) {
+        this.support = support;
+    }
+
+    public List<String> getSupport() {
+        return support;
+    }
+
+    public String getFirstVersion() {
+        return support.getFirst();
     }
 
 }

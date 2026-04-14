@@ -16,7 +16,6 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 
@@ -24,14 +23,17 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public abstract class AdditionalFilesExtension {
 
     private final List<AdditionalFile> additionalFiles;
 
     @Inject
     public AdditionalFilesExtension() {
-        this.additionalFiles = new  ArrayList<>();
+        this.additionalFiles = new ArrayList<>();
+    }
+
+    public List<AdditionalFile> getAdditionalFiles() {
+        return additionalFiles;
     }
 
     public List<AdditionalFile> getAdditionalFilesAsList() {
@@ -42,22 +44,18 @@ public abstract class AdditionalFilesExtension {
         additionalFiles.add(new AdditionalFile(AdditionalFileType.SOURCES_JAR, file));
     }
 
-    @SuppressWarnings("unused")
     public void devJar(final Provider<RegularFile> file) {
         additionalFiles.add(new AdditionalFile(AdditionalFileType.DEV_JAR, file));
     }
 
-    @SuppressWarnings("unused")
     public void javadocJar(final Provider<RegularFile> file) {
         additionalFiles.add(new AdditionalFile(AdditionalFileType.JAVADOC_JAR, file));
     }
 
-    @SuppressWarnings("unused")
     public void signature(final Provider<RegularFile> file) {
         additionalFiles.add(new AdditionalFile(AdditionalFileType.SIGNATURE, file));
     }
 
-    @SuppressWarnings("unused")
     public void other(final Provider<RegularFile> file) {
         additionalFiles.add(new AdditionalFile(AdditionalFileType.OTHER, file));
     }

@@ -16,33 +16,25 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import lombok.Getter;
-import org.gradle.api.Named;
-import org.jspecify.annotations.NonNull;
+import org.gradle.api.Project;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-public class Versions implements Named {
+public class SupportsExtension {
 
-    private final String name;
-    private final List<String> versions;
+    private final List<Support> supports;
 
-    @Inject
-    public Versions(String name) {
-        this.name = name;
-        this.versions = new ArrayList<>();
+    public SupportsExtension(Project project) {
+        this.supports = new ArrayList<>();
     }
 
-    public void versions(String... versions) {
-        this.versions.addAll(List.of(versions));
+    public List<Support> getSupports() {
+        return supports;
     }
 
-    @Override
-    public @NonNull String getName() {
-        return name;
+    public void conf(String... minecraftVersions) {
+        supports.add(new Support(List.of(minecraftVersions)));
     }
 
 }
