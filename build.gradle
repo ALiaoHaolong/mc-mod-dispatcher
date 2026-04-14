@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aliaohaolong"
-version = "1.0.9"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -38,9 +38,9 @@ tasks.named('jar') {
 
 gradlePlugin {
     plugins {
-        register("modrinthPlugin") {
+        register("mcModDispatcher") {
             id = 'com.github.aliaohaolong.mc-mod-dispatcher'  // 插件的唯一标识符
-            implementationClass = 'com.github.aliaohaolong.mcmoddispatcher.ModrinthPlugin'   // 插件入口类的全限定名
+            implementationClass = 'com.github.aliaohaolong.mcmoddispatcher.McModDispatcher'   // 插件入口类的全限定名
             displayName = 'Mc Mod Dispatcher'
             description = 'A build-decoupled Gradle plugin for publishing Minecraft mods: centralized config, cross-branch dispatch, push without rebuild.'
         }

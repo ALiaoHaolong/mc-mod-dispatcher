@@ -24,7 +24,7 @@ import org.gradle.api.tasks.TaskAction;
 import static com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher.GSON;
 import static com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher.userAgent;
 
-public class ModrinthBodyTask extends DefaultTask {
+public class ModrinthSyncBodyTask extends DefaultTask {
 
     @TaskAction
     public void run() {
@@ -35,7 +35,7 @@ public class ModrinthBodyTask extends DefaultTask {
         String slug = modrinthAPI.projects().get(id).join().getSlug();
 
         ModifyProject.ProjectModifications request = ModifyProject.ProjectModifications.builder()
-                .body(ext.getDescription().get().replace("\r\n", "\n"))
+                .body(ext.getSyncBodyFrom().get().replace("\r\n", "\n"))
                 .build();
 
         // Debug

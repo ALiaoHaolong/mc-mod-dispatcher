@@ -19,115 +19,81 @@ package com.github.aliaohaolong.mcmoddispatcher;
 import masecla.modrinth4j.endpoints.version.CreateVersion;
 import masecla.modrinth4j.main.ModrinthAPI;
 import masecla.modrinth4j.model.version.ProjectVersion;
-import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher.GSON;
 import static com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher.userAgent;
 
 public abstract class ModrinthTask extends DefaultTask {
 
-    @Optional
-    @Input
-    public abstract Property<String> getChangelog();
+    private static final ThreadLocal<ModrinthTask> CURRENT_TASK = new ThreadLocal<>();
 
     @Optional
     @Input
     public abstract ListProperty<String> getGameVersions();
 
-    @Optional
-    @Input
-    public abstract Property<String> getVersionNumber();
-
-    @Optional
-    @Input
-    public abstract Property<String> getVersionName();
-
-    @Optional
-    @InputFile
-    public abstract RegularFileProperty getPrimaryFile();
-
-    @Optional
-    @Input
-    public abstract Property<AdditionalFilesExtension> getAdditionalFiles();
-
-    @Optional
-    @Input
-    public abstract Property<String> getVersionType();
-
-    @Optional
-    @Input
-    public abstract ListProperty<String> getLoaders();
-
-    @Optional
-    @Input
-    public abstract Property<DependenciesExtension> getDependencies();
-
-    public void additionalFiles(Action<? super AdditionalFilesExtension> action) {
-        if (!getAdditionalFiles().isPresent()) {
-            getAdditionalFiles().set(getProject().getObjects().newInstance(AdditionalFilesExtension.class));
-        }
-        action.execute(getAdditionalFiles().get());
-    }
-
-    public void dependencies(Action<? super DependenciesExtension> action) {
-        if (!getDependencies().isPresent()) {
-            getDependencies().set(getProject().getObjects().newInstance(DependenciesExtension.class));
-        }
-        action.execute(getDependencies().get());
-    }
-
     @TaskAction
     public void run() {
-        ModrinthExtension config = getProject().getExtensions().getByType(ModrinthExtension.class);
+        CURRENT_TASK.set(this);
+        try {
 
-        ModrinthAPI modrinthAPI = ModrinthAPI.rateLimited(userAgent(config), config.getToken().get());
-        String id = config.getProjectId().get();
-        String slug = modrinthAPI.projects().get(id).join().getSlug();
+            ModrinthExtension ext = getProject().getExtensions().getByType(ModrinthExtension.class);
 
-        CreateVersion.CreateVersionRequest request = CreateVersion.CreateVersionRequest.builder()
-                .name(getVersionName().get())
-                .versionNumber(getVersionNumber().get())
-                .changelog(getChangelog().get().replace("\r\n", "\n"))
-                .dependencies(getDependencies().get().getDependenciesAsList().stream().map(d -> d.toProjectDependency(modrinthAPI)).toList())
-                .gameVersions(getGameVersions().get())
-                .versionType(ProjectVersion.VersionType.valueOf(getVersionType().get().toUpperCase(Locale.ROOT)))
-                .loaders(getLoaders().get())
-                .featured(false)
-                .projectId(config.getProjectId().get())
-                .files(mergeFiles(getPrimaryFile().get().getAsFile(), getAdditionalFiles().get().getAdditionalFilesAsList()))
-                .build();
+            ModrinthAPI modrinthAPI = ModrinthAPI.rateLimited(userAgent(ext), ext.getToken().get());
+            String id = ext.getProjectId().get();
+            String slug = modrinthAPI.projects().get(id).join().getSlug();
 
-        // Debug
-        if (config.getDebugMode().get()) {
-            getLogger().lifecycle("Full data to be sent for upload: {}", GSON.toJson(request));
-            getLogger().lifecycle("Debug mode is enabled. Not going to upload this version.");
-            return;
+            CreateVersion.CreateVersionRequest request = CreateVersion.CreateVersionRequest.builder()
+                    .name(ext.getVersionName().get())
+                    .versionNumber(ext.getVersionNumber().get())
+                    .changelog(ext.getChangelog().get().replace("\r\n", "\n"))
+                    .dependencies(ext.getDependencies().getDependenciesAsList().stream().map(d -> d.toProjectDependency(modrinthAPI)).toList())
+                    .gameVersions(getGameVersions().getOrElse(ext.getGameVersions().get())) // 优先使用任务配置
+                    .versionType(ProjectVersion.VersionType.valueOf(ext.getVersionType().get().toUpperCase(Locale.ROOT)))
+                    .loaders(ext.getLoaders().get())
+                    .featured(ext.getFeatured().get())
+                    .projectId(ext.getProjectId().get())
+                    .files(mergeFiles(ext.getPrimaryFile().get().getAsFile(), ext.getAdditionalFiles().getAdditionalFilesAsList()))
+                    .build();
+
+            // Debug
+            if (ext.getDebugMode().get()) {
+                getLogger().lifecycle("Full data to be sent for upload: {}", GSON.toJson(request));
+                getLogger().lifecycle("Debug mode is enabled. Not going to upload this version.");
+                return;
+            }
+
+            // Request
+            ProjectVersion version = modrinthAPI.versions().createProjectVersion(request).join();
+
+            getLogger().lifecycle(
+                    "Successfully uploaded version {} to {} ({}) as version ID {}.",
+                    version.getVersionNumber(),
+                    slug,
+                    id,
+                    version.getId()
+            );
+
+        } finally {
+            CURRENT_TASK.remove();
+        }
+    }
+
+    public static List<String> getCurrentGameVersions(Project project) {
+        List<String> gameVersions = CURRENT_TASK.get().getGameVersions().getOrElse(new ArrayList<>());
+        if (!gameVersions.isEmpty()) {
+            return gameVersions;
         }
 
-        // Request
-        ProjectVersion version = modrinthAPI.versions().createProjectVersion(request).join();
-
-        getLogger().lifecycle(
-                "Successfully uploaded version {} to {} ({}) as version ID {}.",
-                version.getVersionNumber(),
-                slug,
-                id,
-                version.getId()
-        );
+        return project.getExtensions().getByType(ModrinthExtension.class).getGameVersions().get();
     }
 
     private Map<File, String> mergeFiles(File primaryFile, List<AdditionalFile> additionalFiles) {

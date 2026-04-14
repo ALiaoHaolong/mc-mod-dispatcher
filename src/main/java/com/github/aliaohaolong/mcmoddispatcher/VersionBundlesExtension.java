@@ -19,27 +19,29 @@ package com.github.aliaohaolong.mcmoddispatcher;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameVersionsExtension {
+public class VersionBundlesExtension {
 
     private final Project project;
-    private final List<Support> supports;
+    private final List<VersionBundle> versionBundles;
 
-    public GameVersionsExtension(Project project) {
+    @Inject
+    public VersionBundlesExtension(Project project) {
         this.project = project;
-        this.supports = new ArrayList<>();
+        this.versionBundles = new ArrayList<>();
     }
 
-    public List<Support> getSupports() {
-        return supports;
+    public List<VersionBundle> getVersionBundles() {
+        return versionBundles;
     }
 
-    public void conf(String... minecraftVersions) {
+    public void versionBundle(String... minecraftVersions) {
         ListProperty<String> support = project.getObjects().listProperty(String.class);
         support.addAll(minecraftVersions);
-        supports.add(new Support(support));
+        versionBundles.add(new VersionBundle(support));
     }
 
 }

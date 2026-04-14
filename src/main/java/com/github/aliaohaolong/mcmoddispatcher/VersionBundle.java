@@ -18,20 +18,20 @@ package com.github.aliaohaolong.mcmoddispatcher;
 
 import org.gradle.api.provider.ListProperty;
 
-public class Support {
+public class VersionBundle {
 
-    private final ListProperty<String> support;
+    private final ListProperty<String> supportedVersions;
 
-    public Support(ListProperty<String> support) {
-        this.support = support;
+    public VersionBundle(ListProperty<String> supportedVersions) {
+        this.supportedVersions = supportedVersions;
     }
 
-    public ListProperty<String> getSupport() {
-        return support;
+    public ListProperty<String> getSupportedVersions() {
+        return supportedVersions;
     }
 
-    public String getFirstVersion() {
-        return support.get().getFirst();
+    public String getFirstSupportedVersion() {
+        return supportedVersions.get().getFirst();
     }
 
 }
