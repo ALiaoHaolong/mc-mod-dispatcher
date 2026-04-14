@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.aliaohaolong"
-version = "1.0.6"
+version = "1.0.7"
 
 repositories {
     mavenCentral()
@@ -56,8 +56,6 @@ publishing {
         create('maven', MavenPublication) {
             // 指定发布的是 Java 组件
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
         }
     }
 }
