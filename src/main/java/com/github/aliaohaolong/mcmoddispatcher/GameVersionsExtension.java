@@ -17,15 +17,18 @@
 package com.github.aliaohaolong.mcmoddispatcher;
 
 import org.gradle.api.Project;
+import org.gradle.api.provider.ListProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupportsExtension {
+public class GameVersionsExtension {
 
+    private final Project project;
     private final List<Support> supports;
 
-    public SupportsExtension(Project project) {
+    public GameVersionsExtension(Project project) {
+        this.project = project;
         this.supports = new ArrayList<>();
     }
 
@@ -34,7 +37,9 @@ public class SupportsExtension {
     }
 
     public void conf(String... minecraftVersions) {
-        supports.add(new Support(List.of(minecraftVersions)));
+        ListProperty<String> support = project.getObjects().listProperty(String.class);
+        support.addAll(minecraftVersions);
+        supports.add(new Support(support));
     }
 
 }

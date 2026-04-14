@@ -16,22 +16,22 @@
 
 package com.github.aliaohaolong.mcmoddispatcher;
 
-import java.util.List;
+import org.gradle.api.provider.ListProperty;
 
 public class Support {
 
-    private final List<String> support;
+    private final ListProperty<String> support;
 
-    public Support(List<String> support) {
+    public Support(ListProperty<String> support) {
         this.support = support;
     }
 
-    public List<String> getSupport() {
+    public ListProperty<String> getSupport() {
         return support;
     }
 
     public String getFirstVersion() {
-        return support.getFirst();
+        return support.get().getFirst();
     }
 
 }

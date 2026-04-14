@@ -26,7 +26,7 @@ public class ModrinthPlugin implements Plugin<Project> {
     public void apply(@NonNull Project project) {
         // 注册 Extension
         project.getExtensions().create("modrinth", ModrinthExtension.class, project);
-        project.getExtensions().create("gameVersions", SupportsExtension.class, project);
+        project.getExtensions().create("gameVersions", GameVersionsExtension.class, project);
 
         // 注册 Task
         project.getTasks().register("modrinth", ModrinthTask.class, task -> {
