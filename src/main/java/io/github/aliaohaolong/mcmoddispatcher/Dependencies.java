@@ -14,68 +14,108 @@
  * limitations under the License.
  */
 
-package com.github.aliaohaolong.mcmoddispatcher;
+package io.github.aliaohaolong.mcmoddispatcher;
 
 import masecla.modrinth4j.model.version.ProjectVersion.ProjectDependencyType;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DependenciesExtension {
+/**
+ * This class is used to define dependencies for the mod.
+ */
+public class Dependencies {
 
-    private final NamedDomainObjectContainer<Dependency> dependencies;
+    private final List<Dependency> dependencies;
 
-    @Inject
-    public DependenciesExtension(final Project project) {
-        this.dependencies = project.getObjects().domainObjectContainer(Dependency.class);
+    /**
+     * Constructor
+     */
+    public Dependencies() {
+        this.dependencies = new ArrayList<>();
     }
 
-    public NamedDomainObjectContainer<Dependency> getDependencies() {
-        return dependencies;
+    /**
+     * Gets the dependencies as a list.
+     *
+     * @return The dependencies as a list.
+     */
+    public List<Dependency> getAll() {
+        return List.copyOf(dependencies);
     }
 
-    public List<Dependency> getDependenciesAsList() {
-        return new ArrayList<>(this.dependencies);
-    }
-
+    /**
+     * Adds a required dependency.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     */
     public void required(final String projectIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.REQUIRED, projectIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an optional dependency.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     */
     public void optional(final String projectIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.OPTIONAL, projectIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an incompatible dependency.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     */
     public void incompatible(final String projectIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.INCOMPATIBLE, projectIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an embedded dependency.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     */
     public void embedded(final String projectIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.EMBEDDED, projectIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds a required dependency with a specific version.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     * @param versionIdOrSlug The version ID or slug.
+     */
     public void required(final String projectIdOrSlug, final String versionIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.REQUIRED, projectIdOrSlug, versionIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an optional dependency with a specific version.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     * @param versionIdOrSlug The version ID or slug.
+     */
     public void optional(final String projectIdOrSlug, final String versionIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.OPTIONAL, projectIdOrSlug, versionIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an incompatible dependency with a specific version.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     * @param versionIdOrSlug The version ID or slug.
+     */
     public void incompatible(final String projectIdOrSlug, final String versionIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.INCOMPATIBLE, projectIdOrSlug, versionIdOrSlug));
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Adds an embedded dependency with a specific version.
+     *
+     * @param projectIdOrSlug The project ID or slug.
+     * @param versionIdOrSlug The version ID or slug.
+     */
     public void embedded(final String projectIdOrSlug, final String versionIdOrSlug) {
         dependencies.add(new Dependency(ProjectDependencyType.EMBEDDED, projectIdOrSlug, versionIdOrSlug));
     }

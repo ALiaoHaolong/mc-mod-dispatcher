@@ -1,32 +1,30 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '2.2.1'
 }
 
-group = "com.github.aliaohaolong"
-version = "1.1.0"
+group = "io.github.aliaohaolong"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
     maven {
-        url "https://jitpack.io"
+        url = "https://jitpack.io"
     }
 }
 
 dependencies {
     compileOnly gradleApi()
     implementation 'com.google.code.gson:gson:2.13.2'
-    implementation 'com.github.masecla22:Modrinth4J:master-SNAPSHOT'
+    implementation 'com.github.masecla22:Modrinth4J:da95ff1'
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
-    withSourcesJar()
 }
 
-// com.github.aliaohaolong.mcmoddispatcher.ModrinthPublisher#userAgent 中使用了 getImplementationVersion 来获取版本号
-// 因此需要在 jar 包的 manifest 中添加 Implementation-Version 属性
+// 由于 ModrinthApiFactory#userAgent 中使用了 getImplementationVersion 来获取版本号
+// 所以在 jar 包的 manifest 中添加 Implementation-Version 属性
 tasks.named('jar') {
     manifest {
         attributes(
@@ -36,20 +34,34 @@ tasks.named('jar') {
     }
 }
 
-gradlePlugin {
-    plugins {
-        register("mcModDispatcher") {
-            id = 'com.github.aliaohaolong.mc-mod-dispatcher' // 插件的唯一标识符
-            implementationClass = 'com.github.aliaohaolong.mcmoddispatcher.McModDispatcher' // 插件入口类的全限定名
-            displayName = 'Mc Mod Dispatcher'
-            description = 'Mc Mod Dispatcher is a Gradle plugin that allows mod developers to publish their mods to Modrinth, supporting management of multi-version releases from a single configuration — no mod dev environment required.'
-        }
-    }
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    options.jFlags '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8'
+    options.tags = [
+            'apiNote:a:API Note:',
+            'implSpec:a:Implementation Requirements:',
+            'implNote:a:Implementation Note:'
+    ]
 }
 
-publishing {
-    // 发布到本地 Maven 仓库，方便测试和调试
-    repositories {
-        mavenLocal()
+gradlePlugin {
+    website = 'https://github.com/ALiaoHaolong/mc-mod-dispatcher' // 项目网站
+    vcsUrl = 'https://github.com/ALiaoHaolong/mc-mod-dispatcher' // 项目仓库
+
+    plugins {
+        register("mcModDispatcherPlugin") {
+            id = 'io.github.aliaohaolong.mc-mod-dispatcher' // 插件的唯一 ID
+            displayName = 'Mc Mod Dispatcher' // 可读的插件名
+            description = 'A Gradle plugin for publishing Minecraft mods to Modrinth. Configure once, publish to every Minecraft version you support — no mod dev toolchain required.' // 描述
+            tags.set(['minecraft', 'modrinth', 'publish', 'mod']) // 标签
+            implementationClass = 'io.github.aliaohaolong.mcmoddispatcher.McModDispatcherPlugin' // 插件入口类的全限定名
+
+            compatibility {
+                features {
+                    configurationCache = true
+                    isolatedProjects = false
+                }
+            }
+        }
     }
 }

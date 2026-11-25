@@ -14,49 +14,42 @@
  * limitations under the License.
  */
 
-package com.github.aliaohaolong.mcmoddispatcher;
+package io.github.aliaohaolong.mcmoddispatcher;
 
 import masecla.modrinth4j.main.ModrinthAPI;
 import masecla.modrinth4j.model.version.ProjectVersion;
 import masecla.modrinth4j.model.version.ProjectVersion.ProjectDependency;
 import masecla.modrinth4j.model.version.ProjectVersion.ProjectDependencyType;
-import org.gradle.api.Named;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
-public class Dependency implements Named {
+/**
+ * A dependency for a mod.
+ *
+ * @param dependencyType  The type of the dependency.
+ * @param projectIdOrSlug The project id or slug of the dependency.
+ * @param versionIdOrSlug The version id or slug of the dependency.
+ */
+public record Dependency(
+        ProjectDependencyType dependencyType,
+        String projectIdOrSlug,
+        String versionIdOrSlug
+) {
 
-    private final ProjectDependencyType dependencyType;
-    private final String projectIdOrSlug;
-    private final String versionIdOrSlug;
-
+    /**
+     * Creates a new dependency.
+     *
+     * @param dependencyType  The type of the dependency.
+     * @param projectIdOrSlug The project id or slug of the dependency.
+     */
     public Dependency(ProjectDependencyType dependencyType, String projectIdOrSlug) {
         this(dependencyType, projectIdOrSlug, null);
     }
 
-    public Dependency(ProjectDependencyType dependencyType, String projectIdOrSlug, @Nullable String versionIdOrSlug) {
-        this.dependencyType = dependencyType;
-        this.projectIdOrSlug = projectIdOrSlug;
-        this.versionIdOrSlug = versionIdOrSlug;
-    }
-
-    public ProjectDependencyType getDependencyType() {
-        return dependencyType;
-    }
-
-    public String getProjectIdOrSlug() {
-        return projectIdOrSlug;
-    }
-
-    public String getVersionIdOrSlug() {
-        return versionIdOrSlug;
-    }
-
-    @Override
-    public @NonNull String getName() {
-        return this.projectIdOrSlug;
-    }
-
+    /**
+     * Converts this dependency to a project dependency.
+     *
+     * @param modrinthAPI The Modrinth API client to use.
+     * @return The project dependency.
+     */
     public ProjectDependency toProjectDependency(ModrinthAPI modrinthAPI) {
         String projectId;
         String versionId = null;

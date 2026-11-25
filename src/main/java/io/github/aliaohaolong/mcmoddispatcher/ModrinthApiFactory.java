@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package com.github.aliaohaolong.mcmoddispatcher;
+package io.github.aliaohaolong.mcmoddispatcher;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import masecla.modrinth4j.client.agent.UserAgent;
+import masecla.modrinth4j.main.ModrinthAPI;
 
-public class ModrinthPublisher {
+/**
+ * This class is used to store some static methods.
+ */
+final class ModrinthApiFactory {
 
-    static final Gson GSON = new GsonBuilder()
+    static final Gson DEBUG_GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .setPrettyPrinting()
             .create();
 
-    static UserAgent userAgent(ModrinthExtension ext) {
+    static ModrinthAPI api(String token, String projectId) {
+        return ModrinthAPI.rateLimited(userAgent(projectId), token);
+    }
+
+    private static UserAgent userAgent(String projectId) {
         return UserAgent.builder()
-                .authorUsername("liaohaolong")
-                .projectName("modrinth-publisher")
+                .authorUsername("LiaoHaolong")
+                .projectName("mc-mod-dispatcher")
                 .projectVersion(ModrinthTask.class.getPackage().getImplementationVersion())
-                .contact(ext.getProjectId().get())
+                .contact(projectId)
                 .build();
     }
 

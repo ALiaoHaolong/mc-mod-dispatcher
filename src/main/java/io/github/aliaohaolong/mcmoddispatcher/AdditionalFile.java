@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package com.github.aliaohaolong.mcmoddispatcher;
+package io.github.aliaohaolong.mcmoddispatcher;
 
-import org.gradle.api.provider.ListProperty;
+import org.gradle.api.file.RegularFile;
 
-public class VersionBundle {
-
-    private final ListProperty<String> supportedVersions;
-
-    public VersionBundle(ListProperty<String> supportedVersions) {
-        this.supportedVersions = supportedVersions;
-    }
-
-    public ListProperty<String> getSupportedVersions() {
-        return supportedVersions;
-    }
-
-    public String getFirstSupportedVersion() {
-        return supportedVersions.get().getFirst();
-    }
+/**
+ * This class is used to store additional file information.
+ *
+ * @param type The type of the additional file.
+ * @param file The file.
+ */
+public record AdditionalFile(AdditionalFileType type, RegularFile file) {
 
 }
