@@ -7,6 +7,9 @@ on:
 
 jobs:
   publish:
+    environment:
+      name: gradle-plugin-portal
+      url: https://plugins.gradle.org/
     runs-on: ubuntu-latest
     permissions:
       contents: read
