@@ -1,5 +1,10 @@
 # Mc Mod Dispatcher
 
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aliaohaolong.mc-mod-dispatcher?style=flat-square&logo=gradle)](https://plugins.gradle.org/plugin/io.github.aliaohaolong.mc-mod-dispatcher)
+[![License](https://img.shields.io/github/license/aliaohaolong/mc-mod-dispatcher?style=flat-square&logo=apache)](https://github.com/aliaohaolong/mc-mod-dispatcher/blob/master/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/aliaohaolong/mc-mod-dispatcher?style=flat-square&logo=github)](https://github.com/aliaohaolong/mc-mod-dispatcher/commits/master)
+[![Code Size](https://img.shields.io/github/languages/code-size/aliaohaolong/mc-mod-dispatcher?style=flat-square&logo=github)](https://github.com/aliaohaolong/mc-mod-dispatcher)
+
 🌐 [English](README.md) | 中文
 
 Mc Mod Dispatcher 是一个用于将 Minecraft 模组发布到 Modrinth 的 Gradle 插件。一次配置，即可发布到你所支持的每一个 Minecraft 版本 —— 无需模组开发工具链。
@@ -40,7 +45,7 @@ pluginManagement {
 
 接着，在 `build.gradle` 中添加以下内容：
 
-[![](https://img.shields.io/gradle-plugin-portal/v/io.github.aliaohaolong.mc-mod-dispatcher?label=Gradle%20Plugin%20Portal&color=brightgreen)](https://plugins.gradle.org/plugin/io.github.aliaohaolong.mc-mod-dispatcher)
+[![](https://img.shields.io/gradle-plugin-portal/v/io.github.aliaohaolong.mc-mod-dispatcher?style=flat-square&logo=gradle&label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/io.github.aliaohaolong.mc-mod-dispatcher)
 
 ```groovy
 plugins {
