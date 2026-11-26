@@ -171,7 +171,7 @@ public abstract class ModrinthTask extends DefaultTask {
         boolean debugMode = getDebugMode().get();
 
         // 准备 Modrinth API 客户端
-        ModrinthAPI modrinthAPI = ModrinthApiFactory.api(token, projectId);
+        ModrinthAPI modrinthAPI = ModrinthApiFactory.api(token);
         // 准备请求数据
         CreateVersion.CreateVersionRequest request = CreateVersion.CreateVersionRequest.builder()
                 .name(versionName)

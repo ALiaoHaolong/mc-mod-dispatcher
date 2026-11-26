@@ -32,16 +32,17 @@ final class ModrinthApiFactory {
             .setPrettyPrinting()
             .create();
 
-    static ModrinthAPI api(String token, String projectId) {
-        return ModrinthAPI.rateLimited(userAgent(projectId), token);
+    static ModrinthAPI api(String token) {
+        return ModrinthAPI.rateLimited(userAgent(), token);
     }
 
-    private static UserAgent userAgent(String projectId) {
+    private static UserAgent userAgent() {
+        // 参考 https://docs.modrinth.com/api/ 中 User Agents 一段进行设置
         return UserAgent.builder()
-                .authorUsername("LiaoHaolong")
-                .projectName("mc-mod-dispatcher")
-                .projectVersion(ModrinthTask.class.getPackage().getImplementationVersion())
-                .contact(projectId)
+                .projectName("mc-mod-dispatcher") // 本项目名
+                .authorUsername("aliaohaolong") // 本项目作者
+                .projectVersion(ModrinthTask.class.getPackage().getImplementationVersion()) // 本项目版本
+                .contact("github.com/ALiaoHaolong/mc-mod-dispatcher") // 联系方式
                 .build();
     }
 
