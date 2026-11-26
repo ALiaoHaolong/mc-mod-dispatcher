@@ -16,6 +16,8 @@
 
 package io.github.aliaohaolong.mcmoddispatcher;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import masecla.modrinth4j.endpoints.version.CreateVersion;
 import masecla.modrinth4j.main.ModrinthAPI;
 import masecla.modrinth4j.model.version.ProjectVersion;
@@ -187,8 +189,7 @@ public abstract class ModrinthTask extends DefaultTask {
         // Debug 模式检测
         if (debugMode) {
             // 打印请求数据
-            getLogger().lifecycle("Full data to be sent for upload: {}",
-                    ModrinthApiFactory.DEBUG_GSON.toJson(request));
+            getLogger().lifecycle("Full data to be sent for upload: {}", toJson(request));
             // 打印 Debug 提示
             getLogger().lifecycle("Debug mode is enabled. Not going to upload this version.");
             // 提前返回
@@ -212,6 +213,29 @@ public abstract class ModrinthTask extends DefaultTask {
                 map.put(additionalFile.file().getAsFile(), additionalFile.type().toString())
         );
         return map;
+    }
+
+    private String toJson(CreateVersion.CreateVersionRequest request) {
+        // 将请求转换为 JSON 对象
+        JsonObject jsonObject = ModrinthApiFactory.DEBUG_GSON.toJsonTree(request).getAsJsonObject();
+        // 补充 primary_file 参数（受 CreateVersion 实现影响，primary_file 参数不会自动序列化到 JSON 中）
+        // copy from masecla.modrinth4j.endpoints.version.CreateVersion#sendRequest
+        if (request.getFileNames().size() > 1) {
+            String primaryFile = request.getPrimaryFile();
+            if (primaryFile == null || primaryFile.isEmpty()) {
+                primaryFile = request.getFileNames().getFirst();
+            }
+            jsonObject.addProperty("primary_file", primaryFile);
+        }
+        // 补充 file_parts 参数（受 CreateVersion 实现影响，file_parts 参数不会自动序列化到 JSON 中）
+        // copy from masecla.modrinth4j.endpoints.version.CreateVersion#sendRequest
+        JsonArray array = new JsonArray();
+        for (String filename : request.getFileNames()) {
+            array.add(filename);
+        }
+        jsonObject.add("file_parts", array);
+        // 返回 JSON 字符串
+        return ModrinthApiFactory.DEBUG_GSON.toJson(jsonObject);
     }
 
 }
